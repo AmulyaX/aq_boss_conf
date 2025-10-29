@@ -7,7 +7,7 @@ CONF_URL="${CONF_BASE_URL}/${HOSTNAME}.conf"
 
 echo "Checking remote configuration for device: ${HOSTNAME}..."
 if curl -fs --head "$CONF_URL" >/dev/null 2>&1; then
-    echo "NOTE: Configuration found for this device at ${CONF_URL}"
+    echo "NOTE: Configuration found for this device at remote URL"
 else
     echo "WARNING: No configuration file found for hostname '${HOSTNAME}' on remote URL"
 fi

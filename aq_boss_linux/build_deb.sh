@@ -2,8 +2,15 @@
 set -e
 
 PKG_NAME="aq-boss-linux"
-PKG_VERSION="1.0.0"
 PKG_DIR="$(pwd)"
+
+# Extract version from DEBIAN/control
+PKG_VERSION=$(grep -m1 '^Version:' "${PKG_DIR}/DEBIAN/control" | awk '{print $2}')
+if [ -z "$PKG_VERSION" ]; then
+  echo "Error: Could not read Version from DEBIAN/control"
+  exit 1
+fi
+
 DEB_FILE="${PKG_DIR}/${PKG_NAME}_${PKG_VERSION}_all.deb"
 
 echo "=== Building ${PKG_NAME} ${PKG_VERSION} ==="
