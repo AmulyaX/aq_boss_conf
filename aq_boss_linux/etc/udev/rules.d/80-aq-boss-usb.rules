@@ -1,0 +1,1 @@
+ACTION=="add", SUBSYSTEM=="block", ENV{ID_FS_TYPE}=="vfat|ntfs|ext4", RUN+="/opt/boss-local/updater/usb_update_check.py"

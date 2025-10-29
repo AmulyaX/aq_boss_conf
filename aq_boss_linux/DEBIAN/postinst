@@ -12,6 +12,13 @@ else
     echo "WARNING: No configuration file found for hostname '${HOSTNAME}' on remote URL"
 fi
 
+# Reload udev rules for USB hotplug updates
+if [ -f "$UDEV_RULE" ]; then
+    echo "Reloading udev rules for AQ Boss USB update..."
+    udevadm control --reload-rules || true
+    udevadm trigger || true
+fi
+
 echo "Enabling and starting ${SERVICE_NAME}..."
 systemctl daemon-reload
 systemctl enable --now ${SERVICE_NAME} >/dev/null 2>&1 || true
