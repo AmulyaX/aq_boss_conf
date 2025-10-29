@@ -1,0 +1,15 @@
+[Unit]
+Description=AQ Boss Linux Updater
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/opt/boss-local/updater/aq_boss_linux.py
+Restart=always
+RestartSec=30
+User=root
+WorkingDirectory=/opt/boss-local/updater
+
+[Install]
+WantedBy=multi-user.target

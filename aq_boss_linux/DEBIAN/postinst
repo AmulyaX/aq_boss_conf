@@ -1,0 +1,19 @@
+#!/bin/bash
+set -e
+SERVICE_NAME="aq_boss_linux.service"
+CONF_BASE_URL="https://raw.githubusercontent.com/AmulyaX/aq_boss_conf/refs/heads/main/conf"
+HOSTNAME=$(hostname)
+CONF_URL="${CONF_BASE_URL}/${HOSTNAME}.conf"
+
+echo "Checking remote configuration for device: ${HOSTNAME}..."
+if curl -fs --head "$CONF_URL" >/dev/null 2>&1; then
+    echo "NOTE: Configuration found for this device at ${CONF_URL}"
+else
+    echo "WARNING: No configuration file found for hostname '${HOSTNAME}' on remote URL"
+fi
+
+echo "Enabling and starting ${SERVICE_NAME}..."
+systemctl daemon-reload
+systemctl enable --now ${SERVICE_NAME} >/dev/null 2>&1 || true
+echo "Installation complete."
+exit 0

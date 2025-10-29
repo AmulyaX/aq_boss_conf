@@ -1,0 +1,9 @@
+Package: aq-boss-updater
+Version: 1.0.0
+Section: utils
+Priority: optional
+Architecture: all
+Maintainer: Meritech Solutions
+Description: AQ Boss Binary Updater
+ Automatically downloads and runs the latest AQ Boss binary on boot.
+Depends: python3, adb, net-tools, systemd, curl
