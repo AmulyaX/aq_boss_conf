@@ -1,5 +1,5 @@
-Package: aq-boss-updater
-Version: 1.0.1
+Package: aq-boss-linux
+Version: 1.0.2
 Section: utils
 Priority: optional
 Architecture: all
