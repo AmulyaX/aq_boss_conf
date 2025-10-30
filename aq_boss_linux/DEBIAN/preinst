@@ -1,8 +1,19 @@
 #!/bin/bash
 set -e
-TARGET_DIR="/opt/boss-local"
-if [ -d "$TARGET_DIR" ]; then
-    echo "Cleaning existing $TARGET_DIR..."
-    rm -rf "${TARGET_DIR:?}/"*
+
+ACTION="$1"
+echo "[AQ Boss Linux] Pre-install script running (action: $ACTION)"
+
+# For upgrades, no special handling is needed.
+if [ "$ACTION" = "upgrade" ]; then
+    echo "Upgrade detected — skipping pre-install cleanup."
+    exit 0
 fi
+
+# For fresh installs, you might want to prepare paths
+if [ "$ACTION" = "install" ]; then
+    echo "Preparing directories..."
+    mkdir -p /opt/boss-local/updater || true
+fi
+
 exit 0

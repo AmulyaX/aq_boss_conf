@@ -1,18 +1,39 @@
 #!/bin/bash
 set -e
-SERVICE_NAME="aq_boss_linux.service"
-TARGET_DIR="/opt/boss-local"
 
-case "$1" in
-    remove)
-        echo "Stopping and disabling ${SERVICE_NAME}..."
-        systemctl stop ${SERVICE_NAME} 2>/dev/null || true
-        systemctl disable ${SERVICE_NAME} 2>/dev/null || true
-        ;;
-    purge)
-        echo "Completely removing ${TARGET_DIR}..."
-        rm -rf "${TARGET_DIR}" 2>/dev/null || true
-        ;;
-esac
+USB_RULE="/etc/udev/rules.d/80-aq-boss-usb.rules"
+SYSTEMD_UNIT="/etc/systemd/system/aq_boss_usb_update@.service"
+ACTION="$1"
 
+echo "[AQ Boss Linux] Post-removal cleanup running (action: $ACTION)..."
+
+# Only clean up system files if actually purging
+if [ "$ACTION" = "purge" ]; then
+    echo "Purge detected — removing systemd units and udev rules."
+
+    # Remove udev rule
+    if [ -f "$USB_RULE" ]; then
+        echo "Removing $USB_RULE"
+        rm -f "$USB_RULE"
+        if command -v udevadm >/dev/null 2>&1; then
+            udevadm control --reload-rules || true
+        fi
+    fi
+
+    # Remove systemd unit
+    if [ -f "$SYSTEMD_UNIT" ]; then
+        echo "Removing $SYSTEMD_UNIT"
+        rm -f "$SYSTEMD_UNIT"
+        if command -v systemctl >/dev/null 2>&1; then
+            systemctl daemon-reload || true
+        fi
+    fi
+
+    # Optional: clean log and lock files
+    rm -f /var/log/aq_boss_usb_update.log /tmp/aq_boss_update.lock 2>/dev/null || true
+else
+    echo "Not a purge action — keeping service and udev configurations intact."
+fi
+
+echo "[AQ Boss Linux] Post-removal cleanup complete."
 exit 0
