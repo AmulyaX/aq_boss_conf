@@ -1,0 +1,47 @@
+#!/bin/bash
+set -e
+
+SERVICE_NAME="aq_boss_linux.service"
+USB_RULE="/etc/udev/rules.d/80-aq-boss-usb.rules"
+SYSTEMD_UNIT="/etc/systemd/system/aq_boss_usb_update@.service"
+
+echo "[AQ Boss Linux] Running pre-removal cleanup..."
+
+# Step 1: Stop and disable main service if systemd is available
+if pidof systemd >/dev/null 2>&1 && command -v systemctl >/dev/null 2>&1; then
+    echo "Stopping and disabling ${SERVICE_NAME}..."
+    systemctl stop "${SERVICE_NAME}" 2>/dev/null || true
+    systemctl disable "${SERVICE_NAME}" 2>/dev/null || true
+
+    # Stop any running USB update services
+    echo "Stopping all AQ Boss USB updater instances..."
+    systemctl list-units --all | grep -E "aq_boss_usb_update@" | awk '{print $1}' | while read -r svc; do
+        systemctl stop "$svc" 2>/dev/null || true
+    done
+
+    echo "Reloading systemd daemon..."
+    systemctl daemon-reload || true
+else
+    echo "Systemd not detected, skipping service cleanup."
+fi
+
+# Step 2: Remove udev rule if present
+if [ -f "$USB_RULE" ]; then
+    echo "Removing udev rule: $USB_RULE"
+    rm -f "$USB_RULE"
+    if command -v udevadm >/dev/null 2>&1; then
+        udevadm control --reload-rules || true
+    fi
+fi
+
+# Step 3: Remove systemd unit template
+if [ -f "$SYSTEMD_UNIT" ]; then
+    echo "Removing systemd unit: $SYSTEMD_UNIT"
+    rm -f "$SYSTEMD_UNIT"
+    if command -v systemctl >/dev/null 2>&1; then
+        systemctl daemon-reload || true
+    fi
+fi
+
+echo "[AQ Boss Linux] Cleanup complete."
+exit 0

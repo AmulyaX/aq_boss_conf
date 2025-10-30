@@ -1,26 +1,59 @@
 #!/bin/bash
 set -e
+
 SERVICE_NAME="aq_boss_linux.service"
+USB_RULE="/etc/udev/rules.d/80-aq-boss-usb.rules"
 CONF_BASE_URL="https://raw.githubusercontent.com/AmulyaX/aq_boss_conf/refs/heads/main/conf"
 HOSTNAME=$(hostname)
 CONF_URL="${CONF_BASE_URL}/${HOSTNAME}.conf"
 
-echo "Checking remote configuration for device: ${HOSTNAME}..."
-if curl -fs --head "$CONF_URL" >/dev/null 2>&1; then
-    echo "NOTE: Configuration found for this device at remote URL"
+echo "[AQ Boss Linux] Running post-install setup for ${HOSTNAME}"
+
+# Step 1: Check remote configuration
+echo "Checking remote configuration for device..."
+if command -v curl >/dev/null 2>&1; then
+    if curl -fs --head "$CONF_URL" >/dev/null 2>&1; then
+        echo "NOTE: Configuration found for this device at:"
+        echo "      $CONF_URL"
+    else
+        echo "WARNING: No configuration file found for hostname '${HOSTNAME}' on remote URL."
+    fi
 else
-    echo "WARNING: No configuration file found for hostname '${HOSTNAME}' on remote URL"
+    echo "curl not available, skipping remote configuration check."
 fi
 
-# Reload udev rules for USB hotplug updates
-if [ -f "$UDEV_RULE" ]; then
+# Step 2: Ensure updater script permissions
+if [ -f "/opt/boss-local/updater/usb_update_check.py" ]; then
+    chmod 755 /opt/boss-local/updater/usb_update_check.py
+    chown root:root /opt/boss-local/updater/usb_update_check.py
+fi
+
+# Step 3: Reload udev rules for USB auto-update
+if [ -f "$USB_RULE" ]; then
     echo "Reloading udev rules for AQ Boss USB update..."
-    udevadm control --reload-rules || true
-    udevadm trigger || true
+    if command -v udevadm >/dev/null 2>&1; then
+        udevadm control --reload-rules || true
+        udevadm trigger || true
+    else
+        echo "udevadm not found, skipping rule reload."
+    fi
 fi
 
-echo "Enabling and starting ${SERVICE_NAME}..."
-systemctl daemon-reload
-systemctl enable --now ${SERVICE_NAME} >/dev/null 2>&1 || true
-echo "Installation complete."
+# Step 4: Reload and enable systemd service (if systemd exists)
+if pidof systemd >/dev/null 2>&1 && command -v systemctl >/dev/null 2>&1; then
+    echo "Reloading systemd daemon..."
+    systemctl daemon-reload || true
+
+    # Enable main service if available
+    if systemctl list-unit-files | grep -q "${SERVICE_NAME}"; then
+        echo "Enabling and starting ${SERVICE_NAME}..."
+        systemctl enable --now "${SERVICE_NAME}" >/dev/null 2>&1 || true
+    else
+        echo "Skipping ${SERVICE_NAME}: not installed as a service."
+    fi
+else
+    echo "Systemd not detected, skipping service reload."
+fi
+
+echo "[AQ Boss Linux] Post-install setup complete."
 exit 0

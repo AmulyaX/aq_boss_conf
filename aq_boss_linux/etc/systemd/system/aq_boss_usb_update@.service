@@ -1,0 +1,15 @@
+[Unit]
+Description=AQ Boss USB Updater for %I
+After=local-fs.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /opt/boss-local/updater/usb_update_check.py
+StandardOutput=null
+StandardError=null
+User=root
+Group=root
+Nice=10
+
+[Install]
+WantedBy=multi-user.target

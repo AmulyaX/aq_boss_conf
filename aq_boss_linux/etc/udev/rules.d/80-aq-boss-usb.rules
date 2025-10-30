@@ -1,1 +1,2 @@
-ACTION=="add", SUBSYSTEM=="block", ENV{ID_FS_TYPE}=="vfat|ntfs|ext4", RUN+="/opt/boss-local/updater/usb_update_check.py"
+ACTION=="add", SUBSYSTEM=="block", ENV{DEVTYPE}=="partition", ENV{ID_FS_TYPE}!="", \
+    RUN+="/bin/systemctl start aq_boss_usb_update@%E{DEVNAME}.service"
