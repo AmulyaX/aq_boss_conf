@@ -29,7 +29,7 @@ done
 rm -f "${PKG_DIR}"/*.deb || true
 chmod 755 DEBIAN/preinst DEBIAN/postinst DEBIAN/postrm opt/aq-boss-linux/updater/aq-boss-linux.py
 chmod 644 etc/systemd/system/aq-boss-linux.service DEBIAN/control
-sudo chown -R root:root . || true
+
 
 dpkg-deb --build "${PKG_DIR}" "${DEB_FILE}"
 
