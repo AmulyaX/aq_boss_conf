@@ -13,7 +13,7 @@ fi
 # For fresh installs, you might want to prepare paths
 if [ "$ACTION" = "install" ]; then
     echo "Preparing directories..."
-    mkdir -p /opt/boss-local/updater || true
+    mkdir -p /opt/aq-boss-linux/updater || true
 fi
 
 exit 0

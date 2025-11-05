@@ -5,11 +5,11 @@ Wants=network-online.target
 
 [Service]
 Type=simple
-ExecStart=/opt/boss-local/updater/aq_boss_linux.py
+ExecStart=/opt/aq-boss-linux/updater/aq-boss-linux.py
 Restart=always
 RestartSec=30
 User=root
-WorkingDirectory=/opt/boss-local/updater
+WorkingDirectory=/opt/aq-boss-linux/updater
 
 [Install]
 WantedBy=multi-user.target

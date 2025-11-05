@@ -6,7 +6,7 @@ import time
 import fcntl
 
 PKG_NAME = "aq-boss-linux"
-SERVICE_NAME = "aq_boss_linux.service"
+SERVICE_NAME = "aq-boss-linux.service"
 LOG_FILE = "/var/log/aq_boss_usb_update.log"
 UPDATE_FOLDER = "aq_boss_update"
 LOCK_FILE = "/tmp/aq_boss_update.lock"
