@@ -4,7 +4,7 @@ After=local-fs.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/python3 /opt/boss-local/updater/usb_update_check.py
+ExecStart=/usr/bin/python3 /opt/aq-boss-linux/updater/usb_update_check.py
 StandardOutput=null
 StandardError=null
 User=root

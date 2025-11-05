@@ -19,16 +19,16 @@ REQUIRED_FILES=(
   "DEBIAN/preinst"
   "DEBIAN/postinst"
   "DEBIAN/postrm"
-  "etc/systemd/system/aq_boss_linux.service"
-  "opt/boss-local/updater/aq_boss_linux.py"
+  "etc/systemd/system/aq-boss-linux.service"
+  "opt/aq-boss-linux/updater/aq-boss-linux.py"
 )
 for f in "${REQUIRED_FILES[@]}"; do
   [ -f "$f" ] || { echo "Missing $f"; exit 1; }
 done
 
 rm -f "${PKG_DIR}"/*.deb || true
-chmod 755 DEBIAN/preinst DEBIAN/postinst DEBIAN/postrm opt/boss-local/updater/aq_boss_linux.py
-chmod 644 etc/systemd/system/aq_boss_linux.service DEBIAN/control
+chmod 755 DEBIAN/preinst DEBIAN/postinst DEBIAN/postrm opt/aq-boss-linux/updater/aq-boss-linux.py
+chmod 644 etc/systemd/system/aq-boss-linux.service DEBIAN/control
 sudo chown -R root:root . || true
 
 dpkg-deb --build "${PKG_DIR}" "${DEB_FILE}"

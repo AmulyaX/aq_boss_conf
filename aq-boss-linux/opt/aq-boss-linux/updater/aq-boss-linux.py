@@ -11,7 +11,7 @@ CONF_BASE_URL = (
     "https://raw.githubusercontent.com/AmulyaX/aq_boss_conf/refs/heads/main/conf"
 )
 FW_BASE_URL = "https://fw.azenqos.com/boss-local"
-BASE_PATH = "/opt/boss-local/binaries"
+BASE_PATH = "/opt/aq-boss-linux/binaries"
 REQUIRED_PACKAGES = ["adb", "net-tools"]
 PING_TARGET = "8.8.8.8"
 
