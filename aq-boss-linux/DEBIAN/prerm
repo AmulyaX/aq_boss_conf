@@ -1,9 +1,9 @@
 #!/bin/bash
 set -e
 
-SERVICE_NAME="aq_boss_linux.service"
+SERVICE_NAME="aq-boss-linux.service"
 USB_RULE="/etc/udev/rules.d/80-aq-boss-usb.rules"
-SYSTEMD_UNIT="/etc/systemd/system/aq_boss_usb_update@.service"
+SYSTEMD_UNIT="/etc/systemd/system/aq-boss-usb-update@.service"
 ACTION="$1"
 
 echo "[AQ Boss Linux] Pre-removal step running (action: $ACTION)..."
@@ -22,7 +22,7 @@ if pidof systemd >/dev/null 2>&1 && command -v systemctl >/dev/null 2>&1; then
 
     # Stop any active USB updater instances
     echo "Stopping AQ Boss USB updater instances..."
-    systemctl list-units --all | grep -E "aq_boss_usb_update@" | awk '{print $1}' | while read -r svc; do
+    systemctl list-units --all | grep -E "aq-boss-usb-update@" | awk '{print $1}' | while read -r svc; do
         systemctl stop "$svc" 2>/dev/null || true
     done
 

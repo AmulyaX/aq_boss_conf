@@ -2,7 +2,7 @@
 set -e
 
 USB_RULE="/etc/udev/rules.d/80-aq-boss-usb.rules"
-SYSTEMD_UNIT="/etc/systemd/system/aq_boss_usb_update@.service"
+SYSTEMD_UNIT="/etc/systemd/system/aq-boss-usb-update@.service"
 ACTION="$1"
 
 echo "[AQ Boss Linux] Post-removal cleanup running (action: $ACTION)..."
