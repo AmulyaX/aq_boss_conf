@@ -3,6 +3,7 @@ set -e
 
 USB_RULE="/etc/udev/rules.d/80-aq-boss-usb.rules"
 SYSTEMD_UNIT="/etc/systemd/system/aq-boss-usb-update@.service"
+INSTALL_DIR="/opt/aq-boss-linux"
 ACTION="$1"
 
 echo "[AQ Boss Linux] Post-removal cleanup running (action: $ACTION)..."
@@ -27,6 +28,12 @@ if [ "$ACTION" = "purge" ]; then
         if command -v systemctl >/dev/null 2>&1; then
             systemctl daemon-reload || true
         fi
+    fi
+
+    # Remove install directory so dpkg can drop the path cleanly
+    if [ -d "$INSTALL_DIR" ]; then
+        echo "Removing $INSTALL_DIR"
+        rm -rf "$INSTALL_DIR"
     fi
 
     # Optional: clean log and lock files

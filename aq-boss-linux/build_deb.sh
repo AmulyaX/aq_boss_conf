@@ -3,6 +3,22 @@ set -e
 
 PKG_NAME="aq-boss-linux"
 PKG_DIR="$(pwd)"
+INSTALL_AFTER_BUILD=false
+
+while getopts ":ih" opt; do
+  case "$opt" in
+    i) INSTALL_AFTER_BUILD=true ;;
+    h)
+      echo "Usage: $0 [-i]"
+      echo "  -i   Install the built package after building"
+      exit 0
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      exit 1
+      ;;
+  esac
+done
 
 # Extract version from DEBIAN/control
 PKG_VERSION=$(grep -m1 '^Version:' "${PKG_DIR}/DEBIAN/control" | awk '{print $2}')
@@ -34,3 +50,13 @@ chmod 644 etc/systemd/system/aq-boss-linux.service DEBIAN/control
 dpkg-deb --build "${PKG_DIR}" "${DEB_FILE}"
 
 echo "✅ Built package: ${DEB_FILE}"
+
+if $INSTALL_AFTER_BUILD; then
+  echo "Installing ${DEB_FILE}..."
+  if [ "${EUID:-$(id -u)}" -ne 0 ]; then
+    SUDO="sudo"
+  else
+    SUDO=""
+  fi
+  $SUDO dpkg -i "${DEB_FILE}"
+fi
