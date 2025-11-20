@@ -45,6 +45,14 @@ fi
 
 # Step 4: Ensure the main service is enabled and running
 if has_systemd; then
+    if [ -x "/opt/aq-boss-linux/updater/automount.sh" ]; then
+        echo "Ensuring automount is enabled for the active desktop session..."
+        if /opt/aq-boss-linux/updater/automount.sh --enable; then
+            echo "Automount enabled."
+        else
+            echo "Warning: failed to enable automount automatically — enable USB automount manually to allow USB updates."
+        fi
+    fi
     if $is_upgrade; then
         echo "Restarting $SERVICE_NAME after upgrade..."
         systemctl restart "$SERVICE_NAME" >/dev/null 2>&1 || true

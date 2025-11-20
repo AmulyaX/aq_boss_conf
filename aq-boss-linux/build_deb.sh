@@ -37,13 +37,14 @@ REQUIRED_FILES=(
   "DEBIAN/postrm"
   "etc/systemd/system/aq-boss-linux.service"
   "opt/aq-boss-linux/updater/aq-boss-linux.py"
+  "opt/aq-boss-linux/updater/automount.sh"
 )
 for f in "${REQUIRED_FILES[@]}"; do
   [ -f "$f" ] || { echo "Missing $f"; exit 1; }
 done
 
 rm -f "${PKG_DIR}"/*.deb || true
-chmod 755 DEBIAN/preinst DEBIAN/postinst DEBIAN/postrm opt/aq-boss-linux/updater/aq-boss-linux.py
+chmod 755 DEBIAN/preinst DEBIAN/postinst DEBIAN/postrm opt/aq-boss-linux/updater/aq-boss-linux.py opt/aq-boss-linux/updater/automount.sh
 chmod 644 etc/systemd/system/aq-boss-linux.service DEBIAN/control
 
 

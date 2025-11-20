@@ -10,6 +10,7 @@ SERVICE_NAME = "aq-boss-linux.service"
 LOG_FILE = "/var/log/aq_boss_usb_update.log"
 UPDATE_FOLDER = "aq_boss_update"
 LOCK_FILE = "/tmp/aq_boss_update.lock"
+AUTOMOUNT_HELPER = "/opt/aq-boss-linux/updater/automount.sh"
 
 
 def log(msg):
@@ -46,6 +47,28 @@ def release_lock(fd):
         os.remove(LOCK_FILE)
     except Exception:
         pass
+
+
+def check_automount():
+    """Run helper to verify automount; log warnings if disabled."""
+    if not os.path.isfile(AUTOMOUNT_HELPER):
+        log("Automount helper not found; skipping automount check.")
+        return
+    try:
+        result = subprocess.run(
+            [AUTOMOUNT_HELPER, "--check"],
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+        stdout = (result.stdout or "").strip()
+        if stdout:
+            for line in stdout.splitlines():
+                log(line)
+        if result.returncode != 0:
+            log("Automount appears disabled. Enable USB automount in your desktop settings so USB updates work.")
+    except Exception as exc:
+        log(f"Automount check failed: {exc}")
 
 
 def find_update_folder(timeout=60, interval=5):
@@ -158,6 +181,8 @@ def restart_service():
 
 def main():
     lock_fd = acquire_lock()
+
+    check_automount()
 
     update_dir = find_update_folder(timeout=60, interval=5)
     if not update_dir:
