@@ -84,11 +84,15 @@ def fetch_and_run():
             conf_vars[key.strip()] = value.strip()
 
     aq_boss_ver = conf_vars.get("AQ_BOSS_VER")
+    arch = conf_vars.get("ARCH")
     bridge_mode = conf_vars.get("BRIDGE_MODE", "n").lower()
     dest_ip = conf_vars.get("DEST_IP", "")
 
     if not aq_boss_ver:
         print("Error: AQ_BOSS_VER missing in config")
+        return
+    if not arch:
+        print("Error: ARCH missing in config")
         return
 
     version_dir = os.path.join(BASE_PATH, aq_boss_ver)
@@ -98,7 +102,7 @@ def fetch_and_run():
     with open(conf_path, "w") as f:
         f.write(r.text)
 
-    fw_url = f"{FW_BASE_URL}/azq_boss_pc-{aq_boss_ver}"
+    fw_url = f"{FW_BASE_URL}/azq_boss_pc_linux_{arch}-{aq_boss_ver}"
     bin_path = os.path.join(version_dir, "azq_boss_pc")
 
     print(f"Downloading binary version {aq_boss_ver} from {fw_url}...")
