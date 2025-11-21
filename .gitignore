@@ -1,1 +1,3 @@
 *.deb
+aq-boss-linux/opt/aq-boss-linux/binaries
+aq-boss-linux/opt/aq-boss-linux/binaries/*
