@@ -1,9 +1,10 @@
 [Unit]
 Description=AQ Boss USB Updater for %I
-After=local-fs.target
+After=local-fs.target network-online.target systemd-user-sessions.service time-sync.target systemd-udev-settle.service
+Wants=network-online.target time-sync.target systemd-udev-settle.service
 
 [Service]
-Type=simple
+Type=idle
 ExecStart=/usr/bin/python3 /opt/aq-boss-linux/updater/usb_update_check.py
 StandardOutput=null
 StandardError=null

@@ -43,6 +43,16 @@ if [ -f "/opt/aq-boss-linux/updater/aq-boss-linux.py" ]; then
     chown root:root /opt/aq-boss-linux/updater/aq-boss-linux.py
 fi
 
+if [ -f "/opt/aq-boss-linux/binaries/default/azq_boss_pc" ]; then
+    chmod 755 /opt/aq-boss-linux/binaries/default/azq_boss_pc
+    chown root:root /opt/aq-boss-linux/binaries/default/azq_boss_pc
+fi
+
+if [ -f "/opt/aq-boss-linux/binaries/default/default.conf" ]; then
+    chmod 644 /opt/aq-boss-linux/binaries/default/default.conf
+    chown root:root /opt/aq-boss-linux/binaries/default/default.conf
+fi
+
 # Step 4: Ensure the main service is enabled and running
 if has_systemd; then
     if [ -x "/opt/aq-boss-linux/updater/automount.sh" ]; then

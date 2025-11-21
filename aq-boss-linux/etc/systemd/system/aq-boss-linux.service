@@ -1,10 +1,10 @@
 [Unit]
 Description=AQ Boss Linux Updater
-After=network-online.target
-Wants=network-online.target
+After=network-online.target systemd-user-sessions.service time-sync.target systemd-udev-settle.service
+Wants=network-online.target time-sync.target systemd-udev-settle.service
 
 [Service]
-Type=simple
+Type=idle
 ExecStart=/opt/aq-boss-linux/updater/aq-boss-linux.py
 Restart=always
 RestartSec=30

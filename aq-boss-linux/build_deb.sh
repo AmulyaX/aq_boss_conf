@@ -38,13 +38,23 @@ REQUIRED_FILES=(
   "etc/systemd/system/aq-boss-linux.service"
   "opt/aq-boss-linux/updater/aq-boss-linux.py"
   "opt/aq-boss-linux/updater/automount.sh"
+  "opt/aq-boss-linux/binaries/default/azq_boss_pc"
+  "opt/aq-boss-linux/binaries/default/default.conf"
 )
 for f in "${REQUIRED_FILES[@]}"; do
   [ -f "$f" ] || { echo "Missing $f"; exit 1; }
 done
 
+# Ensure default binary exists and is non-empty
+DEFAULT_BIN="opt/aq-boss-linux/binaries/default/azq_boss_pc"
+if [ ! -s "$DEFAULT_BIN" ]; then
+  echo "Default binary missing or empty at $DEFAULT_BIN"
+  exit 1
+fi
+
 rm -f "${PKG_DIR}"/*.deb || true
-chmod 755 DEBIAN/preinst DEBIAN/postinst DEBIAN/postrm opt/aq-boss-linux/updater/aq-boss-linux.py opt/aq-boss-linux/updater/automount.sh
+chmod 755 DEBIAN/preinst DEBIAN/postinst DEBIAN/postrm opt/aq-boss-linux/updater/aq-boss-linux.py opt/aq-boss-linux/updater/automount.sh opt/aq-boss-linux/binaries/default/azq_boss_pc
+chmod 644 etc/systemd/system/aq-boss-linux.service DEBIAN/control opt/aq-boss-linux/binaries/default/default.conf
 chmod 644 etc/systemd/system/aq-boss-linux.service DEBIAN/control
 
 
